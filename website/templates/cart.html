@@ -21,12 +21,11 @@ content %}
         <td>{{ item.quantity }}</td>
         <td>${{ item.price * item.quantity }}</td>
         <td>
-          <button
+          <a
             class="btn btn-danger"
-            onclick="removeFromCart('{{ item.id }}')"
+            href="{{ url_for('views.remove_from_cart', item_id=item.id) }}"
+            >Remove</a
           >
-            Remove
-          </button>
         </td>
       </tr>
       {% endfor %}
@@ -38,15 +37,9 @@ content %}
   </div>
 
   <div class="text-center mt-5">
-    <a href="{{ url_for('views.cart') }}" class="btn btn-success"
+    <a href="{{ url_for('views.checkout') }}" class="btn btn-success"
       >Proceed to Checkout</a
     >
   </div>
 </div>
-
-<script>
-  function removeFromCart(itemId) {
-    // Implement the function to remove an item from the cart
-  }
-</script>
 {% endblock %}
