@@ -1,3 +1,4 @@
+from flask_wtf.file import FileField, FileAllowed
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, FloatField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, InputRequired
@@ -38,4 +39,6 @@ class ProductForm(FlaskForm):
                        "class": "form-control"})
     category = QuerySelectField('Category', query_factory=lambda: Category.query.all(
     ), get_label='name', allow_blank=False, render_kw={"class": "form-control"})
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png'])], render_kw={
+                      "class": "form-control"})
     submit = SubmitField('Submit', render_kw={"class": "btn btn-primary"})
