@@ -5,8 +5,16 @@ from .models import User, Product, Category
 from .forms import ProductForm, PromoteForm
 from .decorators import check_admin
 from . import db
+import os
+from werkzeug.utils import secure_filename
 
 views = Blueprint('views', __name__)
+
+
+def save_image(image):
+    filename = secure_filename(image.filename)
+    image.save(os.path.join('static', filename))
+    return filename
 
 
 @views.route('/', methods=['GET', 'POST'])
@@ -17,7 +25,7 @@ def home():
 @views.route('/promote', methods=['GET', 'POST'])
 @login_required
 def promote():
-    if session.get('role') != 'admin':
+    if current_user.role('role') != 'admin':
         flash('You do not have permission to access this page.', 'error')
         return redirect(url_for('views.home'))
 
@@ -44,9 +52,8 @@ def our_products():
 
 @views.route('/products/<category_name>')
 def products(category_name):
-    category = Category.query.filter_by(name=category_name).first()
-    products = Product.query.filter_by(
-        category_id=category.id).all() if category else []
+    category = Category.query.filter_by(name=category_name).first_or_404()
+    products = Product.query.filter_by(category_id=category.id).all()
     return render_template('products.html', user=current_user, products=products, category_name=category_name)
 
 
@@ -56,9 +63,11 @@ def products(category_name):
 def add_product():
     form = ProductForm()
     if form.validate_on_submit():
+        image_filename = save_image(form.image.data)
         product = Product(name=form.name.data,
                           description=form.description.data,
                           price=form.price.data,
+                          image=image_filename,
                           category=form.category.data)
         db.session.add(product)
         db.session.commit()
