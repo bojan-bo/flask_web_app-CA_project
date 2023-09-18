@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block content %}
+<h2>Promote User</h2>
+<form method="POST">
+  {{ form.hidden_tag() }}
+  <div class="form-group">
+    {{ form.email.label }} {{ form.email(class="form-control") }} {% for error
+    in form.email.errors %}
+    <span class="text-danger">{{ error }}</span><br />
+    {% endfor %}
+  </div>
+  <div class="form-group">
+    {{ form.role.label }} {{ form.role(class="form-control") }} {% for error in
+    form.role.errors %}
+    <span class="text-danger">{{ error }}</span><br />
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn btn-primary">Promote</button>
+</form>
+{% endblock %}

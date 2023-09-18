@@ -15,61 +15,140 @@
       crossorigin="anonymous"
     />
 
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+
     <title>{% block title %}Home{% endblock %}</title>
   </head>
-  <body>
-    <!-- Nav bar code from https://getbootstrap.com/docs/4.0/components/navbar/ -->
+  <body class="d-flex flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="/">Logo</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
       </button>
-  
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                  <a class="nav-link" id="home" href="/">Home</a>
-              </li>
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="/our-products" id="our-products" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Our Products
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" href="/dog-food">Dog food &amp; treats</a>
-                      <a class="dropdown-item" href="/dog-beds">Dog beds and baskets</a>
-                      <a class="dropdown-item" href="/dog-toys">Dog toys, sport and training</a>
-                      <a class="dropdown-item" href="/dog-care">Dog grooming and care</a>
-                  </div>
-              </li>
-              <li class="nav-item active">
-                  <a class="nav-link" id="contact" href="/contact">Contact</a>
-              </li>
-          </ul>
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" id="home" href="{{ url_for('views.home') }}"
+              >Home</a
+            >
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="{{ url_for('views.our_products') }}"
+              id="our-products"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Our Products
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a
+                class="dropdown-item"
+                href="{{ url_for('views.products', category_name='Dog food & treats') }}"
+                >Dog food &amp; treats</a
+              >
+              <a
+                class="dropdown-item"
+                href="{{ url_for('views.products', category_name='Dog beds and baskets') }}"
+                >Dog beds and baskets</a
+              >
+              <a
+                class="dropdown-item"
+                href="{{ url_for('views.products', category_name='Dog toys, sport and training') }}"
+                >Dog toys, sport and training</a
+              >
+              <a
+                class="dropdown-item"
+                href="{{ url_for('views.products', category_name='Dog grooming and care') }}"
+                >Dog grooming and care</a
+              >
+            </div>
+          </li>
+
+          <li class="nav-item active">
+            <a
+              class="nav-link"
+              id="contact"
+              href="{{ url_for('views.contact') }}"
+              >Contact</a
+            >
+          </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
           <form class="form-inline my-2 my-lg-0 ml-auto mr-2">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <input
+              class="form-control mr-sm-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+              Search
+            </button>
           </form>
-          <form class="d-flex mr-2">
-              <button class="btn btn-outline-dark" type="submit">
-                  <i class="bi-cart-fill me-1"></i>
-                  Cart
-                  <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-              </button>
-          </form>
-          <ul class="navbar-nav">
-              {% if user.is_authenticated %}
-                  <li class="nav-item active">
-                      <a class="nav-link" id="logout" href="/logout">Logout</a>
-                  </li>
-              {% else %}
-                  <li class="nav-item active">
-                      <a class="nav-link" id="account" href="/account">Account</a>
-                  </li>
-              {% endif %}
-          </ul>
+          <li class="nav-item active">
+            <a
+              href="{{ url_for('views.cart') }}"
+              class="btn btn-outline-dark d-flex align-items-center mr-2"
+            >
+              <i class="bi-cart-fill me-1"></i>
+              Cart
+              <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+            </a>
+          </li>
+          {% if current_user.is_authenticated %}
+          <li class="nav-item active">
+            <a
+              class="nav-link"
+              id="account"
+              href="{{ url_for('views.account') }}"
+              >Account</a
+            >
+          </li>
+          <li class="nav-item active"></li>
+          {% if current_user.is_authenticated and current_user.role == 'admin' %}
+            <a class="nav-link" href="{{ url_for('views.add_product') }}">Admin Dashboard</a>
+          {% endif %}
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" id="logout" href="{{ url_for('auth.logout') }}"
+              >Logout</a
+            >
+          </li>
+          {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" id="login" href="{{ url_for('auth.login') }}"
+              >Login</a
+            >
+          </li>
+          <li class="nav-item active">
+            <a
+              class="nav-link"
+              id="register"
+              href="{{ url_for('auth.register') }}"
+              >Register</a
+            >
+          </li>
+          {% endif %}
+        </ul>
       </div>
-  </nav>
-  
+    </nav>
 
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %} {% if category ==
@@ -89,7 +168,7 @@
     </div>
     {% endif %} {% endfor %} {% endif %} {% endwith %}
 
-    <div class="container">{% block content %} {% endblock %}</div>
+    <div class="container flex-grow-1">{% block content %}{% endblock %}</div>
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -106,21 +185,13 @@
       crossorigin="anonymous"
     ></script>
 
-{% block javascript %}
-    <script type="text/javascript">
-      function deleteNote(noteId) {
-  fetch("/delete-note", {
-    method: "POST",
-    body: JSON.stringify({ noteId: noteId }),
-  }).then((_res) => {
-    window.location.href = "/";
-  });
-  }
-</script>
-{% endblock %}
-<!-- Footer-->
-<footer class="py-5 bg-dark">
-  <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
-</footer>
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">
+          Copyright &copy; Your Website 2023
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
