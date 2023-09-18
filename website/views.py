@@ -50,6 +50,23 @@ def products(category_name):
     return render_template('products.html', user=current_user, products=products, category_name=category_name)
 
 
+@views.route('/admin/add-product', methods=['GET', 'POST'])
+@login_required
+@check_admin
+def add_product():
+    form = ProductForm()
+    if form.validate_on_submit():
+        product = Product(name=form.name.data,
+                          description=form.description.data,
+                          price=form.price.data,
+                          category=form.category.data)
+        db.session.add(product)
+        db.session.commit()
+        flash('Product added successfully!', category='success')
+        return redirect(url_for('views.admin'))
+    return render_template('add_product.html', form=form)
+
+
 @views.route('/account')
 @login_required
 def account():
@@ -60,24 +77,7 @@ def account():
 @login_required
 @check_admin
 def admin():
-    # pass in more variables to the template as needed
     return render_template('admin.html', user=current_user)
-
-
-@views.route('/admin/add-product', methods=['GET', 'POST'])
-@login_required
-@check_admin
-def add_product():
-    form = ProductForm()
-    if form.validate_on_submit():
-        product = Product(name=form.name.data,
-                          description=form.description.data,
-                          price=form.price.data)
-        db.session.add(product)
-        db.session.commit()
-        flash('Product added successfully!', category='success')
-        return redirect(url_for('views.admin'))
-    return render_template('add_product.html', form=form)
 
 
 @views.route('/contact')

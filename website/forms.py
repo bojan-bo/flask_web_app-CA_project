@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, FloatField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, InputRequired
+from wtforms_sqlalchemy.fields import QuerySelectField
+from .models import Category, Product
 
 
 class RegistrationForm(FlaskForm):
@@ -28,7 +30,12 @@ class PromoteForm(FlaskForm):
 
 
 class ProductForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    price = FloatField('Price', validators=[DataRequired()])
-    submit = SubmitField('Add Product')
+    name = StringField('Name', validators=[InputRequired()], render_kw={
+                       "class": "form-control"})
+    description = TextAreaField('Description', validators=[
+                                InputRequired()], render_kw={"class": "form-control"})
+    price = FloatField('Price', validators=[InputRequired()], render_kw={
+                       "class": "form-control"})
+    category = QuerySelectField('Category', query_factory=lambda: Category.query.all(
+    ), get_label='name', allow_blank=False, render_kw={"class": "form-control"})
+    submit = SubmitField('Submit', render_kw={"class": "btn btn-primary"})

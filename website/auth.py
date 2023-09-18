@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from .forms import LoginForm, RegistrationForm
+from werkzeug.security import generate_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 
@@ -31,24 +32,20 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        print('Form is valid')
-        if form.errors:
-            print('Form errors:', form.errors)
-            flash('Form validation error: {}'.format(
-                form.errors), category='error')
-        try:
-            user = User(email=form.email.data,
-                        name=form.name.data, role=form.role.data)
-            user.set_password(form.password.data)
-            db.session.add(user)
-            db.session.commit()
-            login_user(user)
-            flash('Registration successful!', category='success')
-            return redirect(url_for('views.home'))
-        except Exception as e:
-            db.session.rollback()
-            print('Error:', e)
-            flash('Error: ' + str(e), category='error')
+        email = form.email.data
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already exists. Please login instead.', category='error')
+            return redirect(url_for('auth.login'))
+
+        user = User(email=email, name=form.name.data, role=form.role.data)
+        user.password_hash = generate_password_hash(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        flash('Registration successful!', category='success')
+        return redirect(url_for('views.home'))
+
     return render_template('register.html', title='Register', form=form)
 
 
