@@ -14,7 +14,7 @@ content %}
       </tr>
     </thead>
     <tbody>
-      {% for item in cart.items %}
+      {% for item in cart['items'] %}
       <tr>
         <td>{{ item.name }}</td>
         <td>${{ item.price }}</td>
@@ -33,7 +33,7 @@ content %}
   </table>
 
   <div class="text-right">
-    <h4>Total: ${{ cart.total }}</h4>
+    <h4>Total: ${{ cart['total'] }}</h4>
   </div>
 
   <div class="text-center mt-5">
