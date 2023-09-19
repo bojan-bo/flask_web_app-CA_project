@@ -113,7 +113,7 @@
           </li>
           <li class="nav-item active"></li>
           {% if current_user.is_authenticated and current_user.role == 'admin' %}
-            <a class="nav-link" href="{{ url_for('views.add_product') }}">Admin Dashboard</a>
+            <a class="nav-link" href="{{ url_for('views.manage_products') }}">Admin Dashboard</a>
             <a class="nav-link" href="{{ url_for('views.promote') }}">Promote User</a>
           {% endif %}
 
