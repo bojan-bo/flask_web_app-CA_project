@@ -24,7 +24,7 @@
   </head>
   <body class="d-flex flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/">Logo</a>
+      <a class="navbar-brand" href="/">HappyPaws</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -64,17 +64,17 @@
               >
               <a
                 class="dropdown-item"
-                href="{{ url_for('views.products', category_name='Dog beds and baskets') }}"
+                href="{{ url_for('views.products', category_name='Dog beds & baskets') }}"
                 >Dog beds and baskets</a
               >
               <a
                 class="dropdown-item"
-                href="{{ url_for('views.products', category_name='Dog toys, sport and training') }}"
+                href="{{ url_for('views.products', category_name='Dog toys, sport & training') }}"
                 >Dog toys, sport and training</a
               >
               <a
                 class="dropdown-item"
-                href="{{ url_for('views.products', category_name='Dog grooming and care') }}"
+                href="{{ url_for('views.products', category_name='Dog grooming & care') }}"
                 >Dog grooming and care</a
               >
             </div>
@@ -91,17 +91,7 @@
         </ul>
 
         <ul class="navbar-nav ml-auto">
-          <form class="form-inline my-2 my-lg-0 ml-auto mr-2">
-            <input
-              class="form-control mr-sm-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-              Search
-            </button>
-          </form>
+        
           <li class="nav-item active">
             <a
               href="{{ url_for('views.cart') }}"
@@ -124,7 +114,9 @@
           <li class="nav-item active"></li>
           {% if current_user.is_authenticated and current_user.role == 'admin' %}
             <a class="nav-link" href="{{ url_for('views.add_product') }}">Admin Dashboard</a>
+            <a class="nav-link" href="{{ url_for('views.promote') }}">Promote User</a>
           {% endif %}
+
           </li>
           <li class="nav-item active">
             <a class="nav-link" id="logout" href="{{ url_for('auth.logout') }}"
