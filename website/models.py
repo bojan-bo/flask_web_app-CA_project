@@ -1,6 +1,7 @@
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from sqlalchemy import UniqueConstraint
 
 
 class User(db.Model, UserMixin):
@@ -22,7 +23,7 @@ class User(db.Model, UserMixin):
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, unique=True)
     products = db.relationship('Product', backref='category', lazy=True)
 
 
