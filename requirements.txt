@@ -1,3 +1,12 @@
-flask
+Flask
+Flask-Login
 Flask-SQLAlchemy
-flask-login
+Flask-WTF
+Flask-Migrate
+Werkzeug
+Jinja2
+bcrypt
+stripe
+wtforms
+wtforms_sqlalchemy
+dotenv
