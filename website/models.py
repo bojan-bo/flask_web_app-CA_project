@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy import UniqueConstraint
 
+# taken from and modified https://github.com/DiptoChakrabarty/flask-online-store/blob/master/split/app.py
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +38,8 @@ class Product(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey(
         'category.id'), nullable=False)
     order_items = db.relationship('OrderItem', backref='product', lazy=True)
+
+# code taken from and modified https://github.com/diwash007/Flask-O-shop/blob/master/app/db_models.py
 
 
 class Order(db.Model):

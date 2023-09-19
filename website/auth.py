@@ -7,6 +7,8 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 auth = Blueprint('auth', __name__)
 
+# some code taken and modified from https://github.com/diwash007/Flask-O-shop/blob/master/app/__init__.py
+
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():

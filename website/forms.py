@@ -29,6 +29,8 @@ class PromoteForm(FlaskForm):
                        ('customer', 'Customer'), ('employee', 'Employee'), ('admin', 'Admin')])
     submit = SubmitField('Promote')
 
+# taken from and modified https://github.com/diwash007/Flask-O-shop/blob/master/app/admin/forms.py
+
 
 class ProductForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired()], render_kw={

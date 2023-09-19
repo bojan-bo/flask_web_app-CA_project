@@ -2,6 +2,8 @@ from functools import wraps
 from flask import flash, redirect, url_for
 from flask_login import current_user
 
+# code taken from and modified https://www.programcreek.com/python/example/99647/flask_login.current_user.is_authenticated
+
 
 def check_admin(f):
     @wraps(f)

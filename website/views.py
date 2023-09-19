@@ -24,6 +24,8 @@ def save_image(image):
 def home():
     return render_template('home.html', user=current_user)
 
+# Some code taken from and modified https://flask.palletsprojects.com/en/latest/quickstart/#redirects-and-errors
+
 
 @views.route('/promote', methods=['GET', 'POST'])
 @login_required
