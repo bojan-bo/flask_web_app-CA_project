@@ -37,8 +37,9 @@ class ProductForm(FlaskForm):
                                 InputRequired()], render_kw={"class": "form-control"})
     price = FloatField('Price', validators=[InputRequired()], render_kw={
                        "class": "form-control"})
-    category = QuerySelectField('Category', query_factory=lambda: Category.query.all(
-    ), get_label='name', allow_blank=False, render_kw={"class": "form-control"})
+    category = QuerySelectField('Category', query_factory=lambda: Category.query.distinct(Category.name).all(),
+                                get_label='name', allow_blank=False, render_kw={"class": "form-control"})
+
     image = FileField('Image', validators=[FileAllowed(['jpg', 'png'])], render_kw={
                       "class": "form-control"})
     submit = SubmitField('Submit', render_kw={"class": "btn btn-primary"})
