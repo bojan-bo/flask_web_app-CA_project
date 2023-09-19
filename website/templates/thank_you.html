@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block title %}Thank You{% endblock %} {% block
+content %}
+<div class="container">
+  <h2 class="text-center">Thank You!</h2>
+  <p class="text-center">
+    Your payment was successful. Thank you for your purchase.
+  </p>
+  <div class="text-center mt-5">
+    <a href="{{ url_for('views.home') }}" class="btn btn-primary"
+      >Go back to Home</a
+    >
+  </div>
+</div>
+{% endblock %}
