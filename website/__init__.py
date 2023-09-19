@@ -9,6 +9,8 @@ load_dotenv()
 
 db = SQLAlchemy()
 
+# code taken from and modified https://github.com/techwithtim/Flask-Web-App-Tutorial/blob/main/website/__init__.py
+
 
 def create_app():
     app = Flask(__name__)
