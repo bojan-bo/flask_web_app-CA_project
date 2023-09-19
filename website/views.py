@@ -60,25 +60,6 @@ def products(category_name):
     return render_template('products.html', user=current_user, products=products, category_name=category_name)
 
 
-@views.route('/admin/add-product', methods=['GET', 'POST'])
-@login_required
-@check_admin
-def add_product():
-    form = ProductForm()
-    if form.validate_on_submit():
-        image_filename = save_image(form.image.data)
-        product = Product(name=form.name.data,
-                          description=form.description.data,
-                          price=form.price.data,
-                          image=image_filename,
-                          category=form.category.data)
-        db.session.add(product)
-        db.session.commit()
-        flash('Product added successfully!', category='success')
-        return redirect(url_for('views.admin'))
-    return render_template('add_product.html', form=form)
-
-
 @views.route('/add-to-cart/<int:product_id>')
 def add_to_cart(product_id):
     product = Product.query.get_or_404(product_id)
@@ -141,7 +122,7 @@ def checkout():
 def charge():
     cart = session.get('cart', [])
     amount = int(sum(item['price'] * item.get('quantity', 1)
-                 for item in cart) * 100)  # amount in cents
+                 for item in cart) * 100)
     payment_method_id = request.form.get('paymentMethodId')
     if not payment_method_id:
         flash('Payment failed. Please try again.', 'error')
@@ -157,11 +138,11 @@ def charge():
             confirm=True,
         )
         flash('Payment was successful', 'success')
-        session['cart'] = []  # clear the cart
+        session['cart'] = []
         session.modified = True
         return redirect(url_for('views.thank_you'))
     except stripe.error.CardError as e:
-        # Since it's a decline, stripe.error.CardError will be caught
+        # Stripe.error.CardError will be caught
         body = e.error.get('charge')
         code = body.get('code')
         flash(f'Card has been declined. Error code: {code}', 'error')
@@ -179,11 +160,9 @@ def charge():
         # Network communication with Stripe failed
         flash('Network communication with Stripe failed. Please try again.', 'error')
     except stripe.error.StripeError as e:
-        # Display a very generic error to the user, and maybe send
-        # yourself an email
+        # Display generic error to the user
         flash('An error occurred while processing your payment. Please try again.', 'error')
     except Exception as e:
-        # Something else happened, completely unrelated to Stripe
         flash('An unexpected error occurred. Please try again.', 'error')
 
     return redirect(url_for('views.checkout'))
@@ -192,6 +171,55 @@ def charge():
 @views.route('/thank-you')
 def thank_you():
     return render_template('thank_you.html')
+
+
+@views.route('/manage_products', methods=['GET', 'POST'])
+@views.route('/manage_products/<int:product_id>', methods=['GET', 'POST'])
+@login_required
+@check_admin
+def manage_products(product_id=None):
+    products = Product.query.all()
+    form = ProductForm()
+
+    # Handle product deletion
+    if request.args.get('action') == 'delete' and product_id:
+        product = Product.query.get_or_404(product_id)
+        db.session.delete(product)
+        db.session.commit()
+        flash('Product deleted successfully!', 'success')
+        return redirect(url_for('views.manage_products'))
+    if product_id:
+        product = Product.query.get_or_404(product_id)
+        form = ProductForm(obj=product)
+
+    if form.validate_on_submit():
+        if product_id:  # Update existing product
+            product.name = form.name.data
+            product.description = form.description.data
+            product.price = form.price.data
+            product.category = form.category.data
+            if form.image.data:
+                image_filename = save_image(form.image.data)
+                product.image = image_filename
+            db.session.commit()
+            flash('Product updated successfully!', 'success')
+        else:  # Add new product
+            new_product = Product(
+                name=form.name.data,
+                description=form.description.data,
+                price=form.price.data,
+                category=form.category.data
+            )
+            if form.image.data:
+                image_filename = save_image(form.image.data)
+                new_product.image = image_filename
+            db.session.add(new_product)
+            db.session.commit()
+            flash('Product added successfully!', 'success')
+
+        return redirect(url_for('views.manage_products'))
+
+    return render_template('manage_products.html', form=form, products=products)
 
 
 @views.route('/account')
